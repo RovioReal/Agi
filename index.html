@@ -1,0 +1,870 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGI Nexus - Exploring the Future of Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom CSS for advanced animations, overrides, and specific styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a; /* Very dark background */
+            color: #e0e0e0; /* Light grey text */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Futuristic color palette */
+        :root {
+            --primary-color: #00ffff; /* Cyan */
+            --secondary-color: #9400d3; /* Dark Violet */
+            --accent-color: #ff00ff; /* Magenta */
+            --bg-dark: #0a0a0a;
+            --bg-medium: #1a1a1a;
+            --text-light: #e0e0e0;
+            --text-medium: #a0a0a0;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-medium);
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            border: 2px solid var(--bg-medium);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--accent-color);
+        }
+
+        /* Header Styles */
+        header {
+            transition: background-color 0.3s ease;
+        }
+        header.scrolled {
+            background-color: rgba(10, 10, 10, 0.8); /* Darker background on scroll */
+            backdrop-filter: blur(10px);
+        }
+
+        /* Navigation Link Hover Effect */
+        nav a {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: var(--primary-color);
+        }
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Button Styles */
+        .btn {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: color 0.4s ease-in-out;
+        }
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(0, 255, 255, 0.4), transparent);
+            transition: left 0.6s ease;
+            z-index: -1;
+        }
+        .btn:hover::before {
+            left: 100%;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--bg-dark);
+            border: 1px solid var(--primary-color);
+        }
+        .btn-primary:hover {
+            background-color: transparent;
+            color: var(--primary-color);
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--text-medium);
+        }
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--bg-medium);
+            border: 1px solid #333;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            overflow: hidden; /* Ensure pseudo-elements stay within bounds */
+        }
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 255, 255, 0.2);
+            border-color: var(--primary-color);
+        }
+        .card img {
+            transition: transform 0.4s ease;
+        }
+        .card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Section Title Underline Animation */
+        .section-title {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+            margin-bottom: 20px; /* Add space below title */
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 0; /* Initially hidden */
+            height: 3px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transition: width 0.5s ease-out; /* Animation */
+        }
+        .section-title.animate::after {
+            width: 70%; /* Animate to this width */
+        }
+
+
+        /* Three.js Canvas Styling (if used) */
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Place behind content */
+            opacity: 0.15; /* Make it subtle */
+        }
+
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader {
+            border: 5px solid var(--bg-medium);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px; /* Space between loader and text */
+        }
+        #loading-text {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Menu Styles */
+        #mobile-menu {
+            transition: transform 0.4s ease-in-out;
+            transform: translateX(100%); /* Start off-screen */
+        }
+        #mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* General Animation Classes (for GSAP) */
+        .fade-in { opacity: 0; }
+        .fade-in-up { opacity: 0; transform: translateY(30px); }
+        .fade-in-left { opacity: 0; transform: translateX(-30px); }
+        .fade-in-right { opacity: 0; transform: translateX(30px); }
+        .scale-in { opacity: 0; transform: scale(0.9); }
+
+        /* Specific Element Styling */
+        .hero-title {
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .concept-item {
+            border-left: 3px solid var(--primary-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .concept-item:hover {
+            background-color: rgba(0, 255, 255, 0.05);
+            border-left-color: var(--accent-color);
+        }
+
+        /* Ensure enough height for scroll animations */
+        section {
+            min-height: 60vh; /* Adjust as needed */
+            padding-top: 100px;
+            padding-bottom: 100px;
+        }
+
+        /* Contact Form Styling */
+        .form-input {
+            background-color: var(--bg-medium);
+            border: 1px solid #444;
+            color: var(--text-light);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="preloader">
+        <div class="loader"></div>
+        <p id="loading-text">Initializing AGI Nexus...</p>
+    </div>
+
+    <canvas id="three-canvas"></canvas>
+
+    <header id="main-header" class="fixed top-0 left-0 w-full z-50 py-4 px-6 md:px-12">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#hero" class="text-2xl font-bold text-white hover:text-primary-color transition duration-300 fade-in-left">
+                <i class="fas fa-brain mr-2 text-primary-color"></i>AGI <span class="text-primary-color">Nexus</span>
+            </a>
+
+            <nav class="hidden md:flex space-x-8 fade-in">
+                <a href="#hero" class="text-text-medium hover:text-primary-color">Home</a>
+                <a href="#featured-articles" class="text-text-medium hover:text-primary-color">Articles</a>
+                <a href="#agi-concepts" class="text-text-medium hover:text-primary-color">Concepts</a>
+                <a href="#about" class="text-text-medium hover:text-primary-color">About</a>
+                <a href="#contact" class="text-text-medium hover:text-primary-color">Contact</a>
+            </nav>
+
+            <button id="mobile-menu-button" class="md:hidden text-white text-2xl z-50 fade-in-right">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-64 bg-bg-medium shadow-lg p-8 z-40 md:hidden">
+        <button id="close-mobile-menu" class="absolute top-4 right-4 text-white text-2xl mb-8">
+            <i class="fas fa-times"></i>
+        </button>
+        <nav class="flex flex-col space-y-6 mt-16">
+            <a href="#hero" class="text-text-light hover:text-primary-color text-lg mobile-nav-link">Home</a>
+            <a href="#featured-articles" class="text-text-light hover:text-primary-color text-lg mobile-nav-link">Articles</a>
+            <a href="#agi-concepts" class="text-text-light hover:text-primary-color text-lg mobile-nav-link">Concepts</a>
+            <a href="#about" class="text-text-light hover:text-primary-color text-lg mobile-nav-link">About</a>
+            <a href="#contact" class="text-text-light hover:text-primary-color text-lg mobile-nav-link">Contact</a>
+        </nav>
+    </div>
+
+    <main>
+
+        <section id="hero" class="min-h-screen flex items-center justify-center text-center relative overflow-hidden px-4">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/30 to-black/80 z-10"></div>
+            <div class="absolute inset-0 bg-cover bg-center opacity-30" style="background-image: url('https://placehold.co/1920x1080/0a0a0a/00ffff?text=Futuristic+Background'); z-index: 0;"></div>
+
+            <div class="relative z-20 max-w-4xl mx-auto">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 hero-title fade-in-up" style="animation-delay: 0.2s;">
+                    The Dawn of <span class="text-primary-color">Artificial General Intelligence</span>
+                </h1>
+                <p class="text-lg md:text-xl text-text-medium mb-10 fade-in-up" style="animation-delay: 0.4s;">
+                    Exploring the frontiers of AGI, machine consciousness, and the future of intelligent systems. Join the conversation at the nexus of technology and humanity.
+                </p>
+                <div class="space-x-4 fade-in-up" style="animation-delay: 0.6s;">
+                    <a href="#featured-articles" class="btn btn-primary px-8 py-3 rounded-lg text-lg font-semibold">
+                        Explore Articles
+                    </a>
+                    <a href="#agi-concepts" class="btn btn-secondary px-8 py-3 rounded-lg text-lg font-semibold">
+                        Learn Concepts
+                    </a>
+                </div>
+            </div>
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 fade-in" style="animation-delay: 1s;">
+                <a href="#featured-articles" aria-label="Scroll down">
+                    <i class="fas fa-chevron-down text-2xl text-primary-color animate-bounce"></i>
+                </a>
+            </div>
+        </section>
+
+        <section id="featured-articles" class="py-20 bg-bg-dark px-4 md:px-12">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-16 section-title mx-auto">Featured Insights</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="card rounded-lg shadow-lg scale-in">
+                        <img src="https://placehold.co/600x400/1a1a1a/00ffff?text=AGI+Breakthrough" alt="AGI Breakthrough Concept" class="w-full h-48 object-cover rounded-t-lg" onerror="this.src='https://placehold.co/600x400/1a1a1a/cccccc?text=Image+Error'">
+                        <div class="p-6">
+                            <span class="text-sm text-primary-color font-medium">Deep Learning</span>
+                            <h3 class="text-xl font-semibold text-text-light my-3">The Path to AGI: Are We Closer Than We Think?</h3>
+                            <p class="text-text-medium mb-4 text-sm">Exploring recent advancements in large language models and reinforcement learning that might pave the way...</p>
+                            <a href="#" class="text-primary-color hover:underline font-medium">Read More <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                    <div class="card rounded-lg shadow-lg scale-in" style="animation-delay: 0.1s;">
+                        <img src="https://placehold.co/600x400/1a1a1a/9400d3?text=AI+Ethics" alt="AI Ethics Concept" class="w-full h-48 object-cover rounded-t-lg" onerror="this.src='https://placehold.co/600x400/1a1a1a/cccccc?text=Image+Error'">
+                        <div class="p-6">
+                            <span class="text-sm text-secondary-color font-medium">Ethics & Society</span>
+                            <h3 class="text-xl font-semibold text-text-light my-3">The Ethical Maze of Superintelligence</h3>
+                            <p class="text-text-medium mb-4 text-sm">Addressing the critical alignment problem and the societal implications of creating machines smarter than humans.</p>
+                            <a href="#" class="text-primary-color hover:underline font-medium">Read More <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                    <div class="card rounded-lg shadow-lg scale-in" style="animation-delay: 0.2s;">
+                        <img src="https://placehold.co/600x400/1a1a1a/ff00ff?text=Cognitive+Architecture" alt="Cognitive Architecture" class="w-full h-48 object-cover rounded-t-lg" onerror="this.src='https://placehold.co/600x400/1a1a1a/cccccc?text=Image+Error'">
+                        <div class="p-6">
+                            <span class="text-sm text-accent-color font-medium">Cognitive Science</span>
+                            <h3 class="text-xl font-semibold text-text-light my-3">Building Brains: Cognitive Architectures for AGI</h3>
+                            <p class="text-text-medium mb-4 text-sm">A dive into different approaches for designing the underlying structures of truly general artificial intelligence.</p>
+                            <a href="#" class="text-primary-color hover:underline font-medium">Read More <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                     <div class="card rounded-lg shadow-lg scale-in" style="animation-delay: 0.3s;">
+                        <img src="https://placehold.co/600x400/1a1a1a/00aaaa?text=Quantum+AI" alt="Quantum Computing AI" class="w-full h-48 object-cover rounded-t-lg" onerror="this.src='https://placehold.co/600x400/1a1a1a/cccccc?text=Image+Error'">
+                        <div class="p-6">
+                            <span class="text-sm" style="color: #00aaaa;">Quantum Computing</span>
+                            <h3 class="text-xl font-semibold text-text-light my-3">Quantum Leaps in AI: The AGI Connection</h3>
+                            <p class="text-text-medium mb-4 text-sm">How might quantum computing accelerate the development of AGI, and what are the potential synergies?</p>
+                            <a href="#" class="text-primary-color hover:underline font-medium">Read More <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                     <div class="card rounded-lg shadow-lg scale-in" style="animation-delay: 0.4s;">
+                        <img src="https://placehold.co/600x400/1a1a1a/aa00aa?text=AI+Consciousness" alt="AI Consciousness Concept" class="w-full h-48 object-cover rounded-t-lg" onerror="this.src='https://placehold.co/600x400/1a1a1a/cccccc?text=Image+Error'">
+                        <div class="p-6">
+                            <span class="text-sm" style="color: #aa00aa;">Philosophy</span>
+                            <h3 class="text-xl font-semibold text-text-light my-3">Can Machines Be Conscious? The Debate</h3>
+                            <p class="text-text-medium mb-4 text-sm">Exploring the philosophical and technical challenges surrounding the possibility of artificial consciousness.</p>
+                            <a href="#" class="text-primary-color hover:underline font-medium">Read More <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                     <div class="card rounded-lg shadow-lg scale-in" style="animation-delay: 0.5s;">
+                        <img src="https://placehold.co/600x400/1a1a1a/aaaa00?text=Future+Impact" alt="Future Impact of AGI" class="w-full h-48 object-cover rounded-t-lg" onerror="this.src='https://placehold.co/600x400/1a1a1a/cccccc?text=Image+Error'">
+                        <div class="p-6">
+                            <span class="text-sm" style="color: #aaaa00;">Future Studies</span>
+                            <h3 class="text-xl font-semibold text-text-light my-3">AGI's Impact on Society, Economy, and Humanity</h3>
+                            <p class="text-text-medium mb-4 text-sm">Speculating on the transformative effects AGI could have on every aspect of human civilization.</p>
+                            <a href="#" class="text-primary-color hover:underline font-medium">Read More <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="agi-concepts" class="py-20 bg-bg-medium px-4 md:px-12">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-16 section-title mx-auto">Understanding AGI</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="concept-item p-6 rounded-lg fade-in-left">
+                        <i class="fas fa-lightbulb text-3xl text-primary-color mb-4"></i>
+                        <h3 class="text-2xl font-semibold text-text-light mb-3">What is AGI?</h3>
+                        <p class="text-text-medium">Artificial General Intelligence (AGI) refers to hypothetical intelligent agents that can understand, learn, and apply knowledge across a wide range of tasks, essentially matching or exceeding human cognitive abilities.</p>
+                    </div>
+                    <div class="concept-item p-6 rounded-lg fade-in-up" style="animation-delay: 0.1s;">
+                        <i class="fas fa-cogs text-3xl text-primary-color mb-4"></i>
+                        <h3 class="text-2xl font-semibold text-text-light mb-3">Key Challenges</h3>
+                        <p class="text-text-medium">Major hurdles include achieving common sense reasoning, robust learning from limited data, transfer learning across diverse domains, and understanding causality and context deeply.</p>
+                    </div>
+                    <div class="concept-item p-6 rounded-lg fade-in-right" style="animation-delay: 0.2s;">
+                        <i class="fas fa-balance-scale text-3xl text-primary-color mb-4"></i>
+                        <h3 class="text-2xl font-semibold text-text-light mb-3">AGI vs Narrow AI</h3>
+                        <p class="text-text-medium">Unlike current Narrow AI (e.g., image recognition, NLP) designed for specific tasks, AGI aims for broad, adaptable intelligence comparable to humans.</p>
+                    </div>
+                     <div class="concept-item p-6 rounded-lg fade-in-left" style="animation-delay: 0.3s;">
+                        <i class="fas fa-brain-circuit" style="font-size: 1.875rem; line-height: 2.25rem; color: var(--primary-color); margin-bottom: 1rem; display: inline-block;"></i> <h3 class="text-2xl font-semibold text-text-light mb-3">Potential Architectures</h3>
+                        <p class="text-text-medium">Research explores symbolic AI, connectionism (neural networks), hybrid approaches, and biologically inspired designs as potential paths towards AGI.</p>
+                    </div>
+                     <div class="concept-item p-6 rounded-lg fade-in-up" style="animation-delay: 0.4s;">
+                         <i class="fas fa-shield-alt text-3xl text-primary-color mb-4"></i>
+                        <h3 class="text-2xl font-semibold text-text-light mb-3">Safety & Alignment</h3>
+                        <p class="text-text-medium">Ensuring AGI systems are safe, controllable, and aligned with human values is a paramount concern for researchers and ethicists worldwide.</p>
+                    </div>
+                     <div class="concept-item p-6 rounded-lg fade-in-right" style="animation-delay: 0.5s;">
+                        <i class="fas fa-infinity text-3xl text-primary-color mb-4"></i>
+                        <h3 class="text-2xl font-semibold text-text-light mb-3">The Singularity</h3>
+                        <p class="text-text-medium">A hypothetical future point where technological growth becomes uncontrollable and irreversible, often linked to the emergence of superintelligent AGI.</p>
+                    </div>
+                </div>
+                 <div class="mt-20 text-center fade-in-up" style="animation-delay: 0.6s;">
+                     <h3 class="text-3xl font-bold mb-6 section-title mx-auto">AGI Development Timeline (Conceptual)</h3>
+                     <p class="text-text-medium mb-8 max-w-2xl mx-auto">Visualizing potential milestones - note this is highly speculative.</p>
+                     <div class="bg-bg-medium p-8 rounded-lg border border-gray-700 shadow-lg max-w-3xl mx-auto">
+                         <p class="text-primary-color text-lg">[Placeholder for an interactive chart or timeline visualization - e.g., using Chart.js or D3.js, animated with GSAP on scroll]</p>
+                         <div class="h-64 flex items-center justify-center">
+                            <i class="fas fa-chart-line text-6xl text-gray-600"></i>
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-20 bg-bg-dark px-4 md:px-12">
+            <div class="container mx-auto flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 fade-in-left">
+                    <h2 class="text-4xl font-bold mb-6 section-title">About AGI Nexus</h2>
+                    <p class="text-text-medium mb-4">
+                        AGI Nexus is a dedicated platform for exploring the complex and fascinating world of Artificial General Intelligence. Our mission is to provide insightful articles, clear explanations of core concepts, and a space for thoughtful discussion about the future of intelligence.
+                    </p>
+                    <p class="text-text-medium mb-4">
+                        We believe that understanding AGI is crucial as we navigate the rapid advancements in artificial intelligence. We strive to bridge the gap between technical research, philosophical inquiry, and public understanding.
+                    </p>
+                    <p class="text-text-medium mb-6">
+                        Founded by a team of AI enthusiasts, researchers, and futurists, AGI Nexus aims to be your trusted source for curated content and forward-thinking perspectives on one of the most significant technological endeavors in human history.
+                    </p>
+                    <a href="#contact" class="btn btn-primary px-6 py-2 rounded-lg font-medium">
+                        Get In Touch
+                    </a>
+                </div>
+                <div class="md:w-1/2 fade-in-right">
+                    <img src="https://placehold.co/600x400/0a0a0a/00ffff?text=AGI+Nexus+Team+Concept" alt="Conceptual image representing the AGI Nexus mission" class="rounded-lg shadow-xl border-2 border-primary-color/30" onerror="this.src='https://placehold.co/600x400/0a0a0a/cccccc?text=Image+Error'">
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-20 bg-bg-medium px-4 md:px-12">
+            <div class="container mx-auto max-w-3xl text-center">
+                <h2 class="text-4xl font-bold mb-6 section-title mx-auto">Connect With Us</h2>
+                <p class="text-text-medium mb-10 max-w-xl mx-auto fade-in-up">
+                    Have questions, suggestions, or want to collaborate? We'd love to hear from you. Reach out through the form below or connect via social media.
+                </p>
+
+                <form id="contact-form" class="space-y-6 fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <input type="text" name="name" placeholder="Your Name" required class="form-input w-full p-3 rounded-lg">
+                        <input type="email" name="email" placeholder="Your Email" required class="form-input w-full p-3 rounded-lg">
+                    </div>
+                    <div>
+                        <input type="text" name="subject" placeholder="Subject" required class="form-input w-full p-3 rounded-lg">
+                    </div>
+                    <div>
+                        <textarea name="message" rows="5" placeholder="Your Message" required class="form-input w-full p-3 rounded-lg"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-10 py-3 rounded-lg text-lg font-semibold">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+                 <div id="form-status" class="mt-6 text-lg"></div> <div class="mt-16 fade-in-up" style="animation-delay: 0.4s;">
+                    <h3 class="text-2xl font-semibold text-text-light mb-4">Follow Us</h3>
+                    <div class="flex justify-center space-x-6">
+                        <a href="#" aria-label="Twitter" class="text-text-medium hover:text-primary-color text-3xl transition duration-300"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn" class="text-text-medium hover:text-primary-color text-3xl transition duration-300"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="GitHub" class="text-text-medium hover:text-primary-color text-3xl transition duration-300"><i class="fab fa-github"></i></a>
+                        <a href="#" aria-label="RSS Feed" class="text-text-medium hover:text-primary-color text-3xl transition duration-300"><i class="fas fa-rss"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-bg-dark py-8 px-4 md:px-12 border-t border-gray-800">
+        <div class="container mx-auto text-center text-text-medium">
+            <div class="mb-4">
+                <a href="#hero" class="text-xl font-bold text-white hover:text-primary-color transition duration-300">
+                    <i class="fas fa-brain mr-1 text-primary-color"></i>AGI <span class="text-primary-color">Nexus</span>
+                </a>
+            </div>
+            <nav class="flex justify-center space-x-6 mb-6">
+                <a href="#hero" class="hover:text-primary-color text-sm">Home</a>
+                <a href="#featured-articles" class="hover:text-primary-color text-sm">Articles</a>
+                <a href="#about" class="hover:text-primary-color text-sm">About</a>
+                <a href="#contact" class="hover:text-primary-color text-sm">Contact</a>
+                <a href="#" class="hover:text-primary-color text-sm">Privacy Policy</a>
+            </nav>
+            <p class="text-sm">&copy; <span id="current-year"></span> AGI Nexus. All rights reserved. Exploring the future, responsibly.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- PRELOADER ---
+        const preloader = document.getElementById('preloader');
+        const loadingText = document.getElementById('loading-text');
+        const texts = [
+            "Initializing AGI Nexus...",
+            "Loading neural networks...",
+            "Compiling cognitive models...",
+            "Simulating future scenarios...",
+            "Almost there..."
+        ];
+        let textIndex = 0;
+        const intervalId = setInterval(() => {
+            textIndex = (textIndex + 1) % texts.length;
+            loadingText.textContent = texts[textIndex];
+        }, 1000); // Change text every second
+
+        window.addEventListener('load', () => {
+            clearInterval(intervalId); // Stop changing text
+            loadingText.textContent = "Welcome to AGI Nexus!";
+            setTimeout(() => {
+                preloader.classList.add('hidden');
+                // Initialize animations after preloader is hidden
+                initAnimations();
+                initThreeJSBackground(); // Initialize Three.js if needed
+            }, 800); // Wait a bit after load before hiding
+        });
+
+        // --- HEADER SCROLL EFFECT ---
+        const header = document.getElementById('main-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // --- MOBILE MENU ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.add('open');
+            mobileMenuButton.innerHTML = '<i class="fas fa-times"></i>'; // Change icon to 'X'
+        });
+
+        const closeMenu = () => {
+             mobileMenu.classList.remove('open');
+             mobileMenuButton.innerHTML = '<i class="fas fa-bars"></i>'; // Change icon back to 'bars'
+        }
+
+        closeMobileMenuButton.addEventListener('click', closeMenu);
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', closeMenu); // Close menu when a link is clicked
+        });
+
+        // --- FOOTER YEAR ---
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // --- CONTACT FORM HANDLING (Basic Example) ---
+        const contactForm = document.getElementById('contact-form');
+        const formStatus = document.getElementById('form-status');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent actual submission for this example
+            formStatus.textContent = 'Sending message...';
+            formStatus.style.color = 'var(--primary-color)';
+
+            // Simulate form submission
+            setTimeout(() => {
+                formStatus.textContent = 'Message sent successfully! We will get back to you soon.';
+                formStatus.style.color = 'lightgreen';
+                contactForm.reset(); // Clear the form
+            }, 1500);
+
+            // In a real scenario, you would use fetch() to send data to a server endpoint here.
+            // Example:
+            // const formData = new FormData(contactForm);
+            // fetch('/api/contact', { method: 'POST', body: formData })
+            //     .then(response => response.json())
+            //     .then(data => { /* Handle success */ })
+            //     .catch(error => { /* Handle error */ });
+        });
+
+
+        // --- GSAP ANIMATIONS ---
+        function initAnimations() {
+            console.log("Initializing GSAP animations...");
+            gsap.registerPlugin(ScrollTrigger);
+
+            // General Fade-in Animations on Load (using CSS classes initially set)
+            gsap.utils.toArray('.fade-in').forEach((elem, i) => {
+                gsap.to(elem, {
+                    opacity: 1,
+                    duration: 1,
+                    delay: elem.style.animationDelay ? parseFloat(elem.style.animationDelay) : 0.5 + i * 0.1, // Use existing delay or stagger
+                    ease: 'power2.out'
+                });
+            });
+
+            gsap.utils.toArray('.fade-in-up').forEach((elem, i) => {
+                gsap.to(elem, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    delay: elem.style.animationDelay ? parseFloat(elem.style.animationDelay) : 0.3 + i * 0.1,
+                    ease: 'power2.out'
+                });
+            });
+
+             gsap.utils.toArray('.fade-in-left').forEach((elem, i) => {
+                gsap.to(elem, {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.8,
+                     delay: elem.style.animationDelay ? parseFloat(elem.style.animationDelay) : 0.4 + i * 0.1,
+                    ease: 'power2.out'
+                });
+            });
+
+             gsap.utils.toArray('.fade-in-right').forEach((elem, i) => {
+                gsap.to(elem, {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.8,
+                     delay: elem.style.animationDelay ? parseFloat(elem.style.animationDelay) : 0.4 + i * 0.1,
+                    ease: 'power2.out'
+                });
+            });
+
+
+            // Scroll-Triggered Animations
+
+            // Section Title Underline Animation
+            gsap.utils.toArray('.section-title').forEach(title => {
+                ScrollTrigger.create({
+                    trigger: title,
+                    start: "top 85%", // Trigger when title enters viewport bottom
+                    // markers: true, // Uncomment for debugging
+                    toggleClass: "animate", // Add 'animate' class to trigger CSS transition
+                    once: true // Only animate once
+                });
+            });
+
+             // Card Scale-in Animation (Staggered)
+            gsap.utils.toArray('.card.scale-in').forEach((card, i) => {
+                 gsap.fromTo(card,
+                    { opacity: 0, scale: 0.9, y: 20 },
+                    {
+                        opacity: 1,
+                        scale: 1,
+                        y: 0,
+                        duration: 0.6,
+                        stagger: 0.1,
+                        scrollTrigger: {
+                            trigger: card.closest('section'), // Trigger based on the section
+                            start: "top 70%",
+                            // markers: true, // Uncomment for debugging
+                            toggleActions: "play none none none", // Play animation once on enter
+                            once: true
+                        }
+                    }
+                );
+            });
+
+            // Concept Item Fade-in Animation (Staggered) - Specific classes
+             gsap.utils.toArray('.concept-item.fade-in-left').forEach((item, i) => {
+                 gsap.fromTo(item,
+                    { opacity: 0, x: -30 },
+                    {
+                        opacity: 1,
+                        x: 0,
+                        duration: 0.7,
+                        delay: i * 0.1, // Stagger based on index
+                        scrollTrigger: {
+                            trigger: item,
+                            start: "top 80%",
+                            toggleActions: "play none none none",
+                            once: true
+                        }
+                    }
+                );
+            });
+             gsap.utils.toArray('.concept-item.fade-in-up').forEach((item, i) => {
+                 gsap.fromTo(item,
+                    { opacity: 0, y: 30 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.7,
+                        delay: i * 0.1, // Stagger based on index
+                        scrollTrigger: {
+                            trigger: item,
+                            start: "top 80%",
+                            toggleActions: "play none none none",
+                            once: true
+                        }
+                    }
+                );
+            });
+             gsap.utils.toArray('.concept-item.fade-in-right').forEach((item, i) => {
+                 gsap.fromTo(item,
+                    { opacity: 0, x: 30 },
+                    {
+                        opacity: 1,
+                        x: 0,
+                        duration: 0.7,
+                        delay: i * 0.1, // Stagger based on index
+                        scrollTrigger: {
+                            trigger: item,
+                            start: "top 80%",
+                            toggleActions: "play none none none",
+                            once: true
+                        }
+                    }
+                );
+            });
+
+
+            // About Section Image/Text Reveal
+            if (document.querySelector('#about')) {
+                 gsap.from("#about .fade-in-left", {
+                    opacity: 0, x: -50, duration: 1, scrollTrigger: { trigger: "#about", start: "top 60%", once: true }
+                 });
+                 gsap.from("#about .fade-in-right", {
+                     opacity: 0, x: 50, duration: 1, scrollTrigger: { trigger: "#about", start: "top 60%", once: true }
+                 });
+            }
+
+            // Contact Form Reveal
+             if (document.querySelector('#contact-form')) {
+                 gsap.from("#contact-form .form-input, #contact-form textarea, #contact-form button", {
+                    opacity: 0, y: 20, duration: 0.5, stagger: 0.1, scrollTrigger: { trigger: "#contact-form", start: "top 80%", once: true }
+                 });
+                 gsap.from("#contact .fade-in-up", { // Animate social links too
+                     opacity: 0, y: 20, duration: 0.8, scrollTrigger: { trigger: "#contact .mt-16", start: "top 85%", once: true }
+                 });
+             }
+
+            console.log("GSAP animations initialized.");
+        }
+
+
+        // --- THREE.JS BACKGROUND (Optional - Simple Particle System) ---
+        function initThreeJSBackground() {
+            const canvas = document.getElementById('three-canvas');
+            if (!canvas || !window.THREE) {
+                console.log("Three.js canvas or library not found, skipping background.");
+                return; // Skip if canvas or THREE is not available
+            }
+            console.log("Initializing Three.js background...");
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true }); // alpha: true for transparent background
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio); // Adjust for high-DPI screens
+
+            // --- Particles ---
+            const particleCount = 1500; // More particles for density
+            const particlesGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount * 3; i++) {
+                // Spread particles across a larger area initially
+                positions[i] = (Math.random() - 0.5) * 20; // x, y, z range from -10 to 10
+            }
+            particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.02,
+                color: 0x00ffff, // Cyan color
+                transparent: true,
+                opacity: 0.6,
+                sizeAttenuation: true // Particles smaller further away
+            });
+
+            const particles = new THREE.Points(particlesGeometry, particleMaterial);
+            scene.add(particles);
+
+            camera.position.z = 5; // Move camera back slightly
+
+            // --- Mouse Interaction ---
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            // --- Animation Loop ---
+            const clock = new THREE.Clock();
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const elapsedTime = clock.getElapsedTime();
+
+                // Subtle particle rotation
+                particles.rotation.y = elapsedTime * 0.05;
+                particles.rotation.x = elapsedTime * 0.02;
+
+                // Camera movement based on mouse (subtle effect)
+                camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.02;
+                camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.02;
+                camera.lookAt(scene.position); // Ensure camera always looks at the center
+
+                renderer.render(scene, camera);
+            }
+
+            // --- Handle Window Resize ---
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(window.devicePixelRatio);
+            });
+
+            try {
+                 animate(); // Start the animation loop
+                 console.log("Three.js background initialized successfully.");
+            } catch (error) {
+                 console.error("Error initializing Three.js animation:", error);
+                 canvas.style.display = 'none'; // Hide canvas on error
+            }
+        }
+
+        // Note: Ensure initAnimations() is called after the page loads,
+        // typically within the window.onload event after the preloader logic.
+        // The current setup calls it after the preloader fades out.
+
+    </script>
+
+</body>
+</html>
+
